@@ -24,14 +24,11 @@ RUN apt install -y \
   libfreetype6-dev \
   libgcrypt-mingw-w64-dev \
   libgcrypt20 \
-  libgcrypt20-dbgsym \
   libgcrypt20-dev \
-  libgcrypt20-dev-dbgsym \
   libgnutls28-dev \
   libmp3lame-dev \
   libnuma-dev \
   libopus-dev \
-  libplacebo-dev \
   libsdl2-dev \
   libssl-dev \
   libtool \
@@ -181,6 +178,15 @@ RUN cd ffmpeg && \
   make -j6 && \
   make install && \
   hash -r
+
+RUN git clone --recursive https://code.videolan.org/videolan/libplacebo libplacebo && \
+  cd libplacebo && \
+  git submodule update --init && \
+  DIR=./build && \
+  mkdir build && \
+  meson $DIR && \
+  ninja -C$DIR && \
+  ninja -Cbuild install
 
 WORKDIR /libs
 
