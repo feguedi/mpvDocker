@@ -117,7 +117,7 @@ RUN wget https://github.com/Netflix/vmaf/archive/v3.0.0.tar.gz && \
   tar xvf v3.0.0.tar.gz && \
   mkdir -p vmaf-3.0.0/libvmaf/build &&\
   cd vmaf-3.0.0/libvmaf/build && \
-  meson setup -Denable_tests=false -Denable_docs=false --buildtype=release --default-library=static .. --prefix "/ffmpeg_build" --bindir="/bin" --libdir="/ffmpeg_build/lib" && \
+  meson setup -Denable_tests=false -Denable_docs=false --buildtype=release --default-library=static .. && \
   ninja && \
   ninja install
 
@@ -125,7 +125,7 @@ RUN cd /ffmpeg_sources && \
   git -C fdk-aac pull 2> /dev/null || git clone https://github.com/mstorsjo/fdk-aac && \
   cd fdk-aac && \
   autoreconf -fiv && \
-  ./configure --prefix="/ffmpeg_build" && \
+  ./configure && \
   make -j6 && \
   make install
 
@@ -133,7 +133,7 @@ RUN cd /ffmpeg_sources && \
   git -C SVT-AV1 pull 2> /dev/null || git clone https://gitlab.com/AOMediaCodec/SVT-AV1.git && \
   mkdir -p SVT-AV1/build && \
   cd SVT-AV1/build && \
-  PATH="/bin:$PATH" cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX="/ffmpeg_build" -DCMAKE_BUILD_TYPE=Release -DBUILD_DEC=OFF -DBUILD_SHARED_LIBS=OFF .. && \
+  PATH="/bin:$PATH" cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DBUILD_DEC=OFF -DBUILD_SHARED_LIBS=OFF .. && \
   PATH="/bin:$PATH" make -j6 && \
   make install
 
@@ -147,10 +147,7 @@ RUN wget https://github.com/FFmpeg/FFmpeg/archive/refs/tags/n7.1.zip && \
 
 RUN cd ffmpeg && \
   PATH="/bin:$PATH" PKG_CONFIG_PATH="/ffmpeg_build/lib/pkgconfig:/usr/local/lib/pkgconfig:/usr/lib/pkgconfig" ./configure \
-    --prefix="/ffmpeg_build" \
     --pkg-config-flags="--static" \
-    --extra-cflags="-I/ffmpeg_build/include" \
-    --extra-ldflags="-L/ffmpeg_build/lib" \
     --extra-libs="-lpthread -lm" \
     --ld="g++" \
     --enable-debug=3 \
